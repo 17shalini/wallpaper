@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:wallpaper/data/data.dart';
@@ -17,21 +16,19 @@ class SearchView extends StatefulWidget {
 
 class _SearchViewState extends State<SearchView> {
   List<PhotosModel> photos = [];
-  TextEditingController searchController = new TextEditingController();
+  TextEditingController searchController = TextEditingController();
 
   getSearchWallpaper(String searchQuery) async {
     await http.get(
-         "https://api.pexels.com/v1/search?query=${widget.search}&per_page=30&page=1",
-        headers: {"Authorization" : 'bYZJ7Qt8hcEl4dMgaNAfkMH9Fp1XlgtIkaq7'
-            'dLIxP127uixQmL2Cui1s'}
-    ).then((value){
+        "https://api.pexels.com/v1/search?query=$searchQuery&per_page=30&page=1",
+        headers: {"Authorization": apiKEY}).then((value) {
+      //print(value.body);
 
       Map<String, dynamic> jsonData = jsonDecode(value.body);
       jsonData["photos"].forEach((element) {
         //print(element);
-        PhotosModel photosModel = new PhotosModel(url: 'url', photographer: 'photographer',
-            photographerUrl: 'photographer_url', src: SrcModel(portrait: 'portrait',
-                landscape: 'landscape', large: 'large', medium: 'medium'));
+        PhotosModel photosModel = PhotosModel(url: 'url', photographer: 'photographer', photographerUrl: 'photographer_ur',
+            src: SrcModel.fromMap(jsonData["src"],));
         photosModel = PhotosModel.fromMap(element);
         photos.add(photosModel);
         //print(photosModel.toString()+ "  "+ photosModel.src.portrait);
